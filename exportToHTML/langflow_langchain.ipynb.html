@@ -1,0 +1,1058 @@
+<html>
+<head>
+<title>langflow_langchain.ipynb</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #abb2bf;}
+.s1 { color: #98c379;}
+.s2 { color: #d19a66;}
+.s3 { color: #56b6c2;}
+</style>
+</head>
+<body bgcolor="#282c34">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+langflow_langchain.ipynb</font>
+</center></td></tr></table>
+<pre><span class="s0">{</span>
+ <span class="s1">&quot;cells&quot;</span><span class="s0">: [</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;initial_id&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;collapsed&quot;</span><span class="s0">: </span><span class="s2">true</span><span class="s0">,</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:47:59.719946Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:47:59.715924Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;import json</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;import os</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;import uuid</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;from langgraph.graph import START, MessagesState, StateGraph</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;from langgraph.checkpoint.memory import MemorySaver </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;from langchain_cohere import ChatCohere</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;from nltk.metrics.aline import similarity_matrix</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;from pandas import read_csv</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;from sympy.physics.units import temperature&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">172</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.129865Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:47:59.731950Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;    # Define a new graph</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;workflow = StateGraph(state_schema=MessagesState)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;model = ChatCohere(cohere_api_key=</span><span class="s3">\&quot;</span><span class="s1">QTIAR07ZVhcAVAPrUTHQozivAbRFhmhdoWwPsclg</span><span class="s3">\&quot;</span><span class="s1">, temperature=0.1)</span><span class="s3">\n</span><span class="s1">&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;d0aa35a351c9876f&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">173</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;markdown&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: </span><span class="s1">&quot;&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;f4f6897872ee368a&quot;</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.139193Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.136420Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;def call_model(state: MessagesState):</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    response = model.invoke(state[</span><span class="s3">\&quot;</span><span class="s1">messages</span><span class="s3">\&quot;</span><span class="s1">])</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    return {</span><span class="s3">\&quot;</span><span class="s1">messages</span><span class="s3">\&quot;</span><span class="s1">: response}&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;894814d127149d53&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">174</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.157020Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.152412Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;# Define workflow nodes</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;workflow.add_edge(START, </span><span class="s3">\&quot;</span><span class="s1">model</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;workflow.add_node(</span><span class="s3">\&quot;</span><span class="s1">model</span><span class="s3">\&quot;</span><span class="s1">, call_model)&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;44ac940177ebe59f&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [</span>
+    <span class="s0">{</span>
+     <span class="s1">&quot;data&quot;</span><span class="s0">: {</span>
+      <span class="s1">&quot;text/plain&quot;</span><span class="s0">: [</span>
+       <span class="s1">&quot;&lt;langgraph.graph.state.StateGraph at 0x2753632aa10&gt;&quot;</span>
+      <span class="s0">]</span>
+     <span class="s0">},</span>
+     <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">175</span><span class="s0">,</span>
+     <span class="s1">&quot;metadata&quot;</span><span class="s0">: {},</span>
+     <span class="s1">&quot;output_type&quot;</span><span class="s0">: </span><span class="s1">&quot;execute_result&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">175</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;markdown&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: </span><span class="s1">&quot;&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;9ea29d7e120b3712&quot;</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.185620Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.182536Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;# Set up memory</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;memory = MemorySaver()</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;app = workflow.compile(checkpointer=memory)&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;860fe2746b756235&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">176</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.197019Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.194225Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;# Generate a unique thread ID for conversation management</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;thread_id = uuid.uuid4()</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;config = {</span><span class="s3">\&quot;</span><span class="s1">configurable</span><span class="s3">\&quot;</span><span class="s1">: {</span><span class="s3">\&quot;</span><span class="s1">thread_id</span><span class="s3">\&quot;</span><span class="s1">: thread_id}}&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;b667a121835cc171&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">177</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.212493Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.210157Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: </span><span class="s1">&quot;&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;2ee3ec69020547e0&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">null</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.216853Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.214506Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: </span><span class="s1">&quot;&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;ff2efbc311331491&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">null</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.228025Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.225118Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;field_extraction_prompt = </span><span class="s3">\&quot;\&quot;\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;# Role</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;You are a Data Extraction Agent.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;# Objective</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;Your objective is to identify and extract specific business details from provided text, including industry, company size, location, and job roles. You should construct a full `user_info` dictionary with these details and indicate if there are any missing fields.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;# Context</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;The extracted information will help provide structured business data from raw text inputs, which will support various business and analytical operations.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;# SOP</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;1. Analyze the user-provided text in the variable user_input.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;2. Construct and return the following dictionary:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;{ </span><span class="s3">\&quot;</span><span class="s1">company_size</span><span class="s3">\&quot;</span><span class="s1">: null or employee range (e.g., </span><span class="s3">\&quot;</span><span class="s1">1-10</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">500+</span><span class="s3">\&quot;</span><span class="s1">), </span><span class="s3">\&quot;</span><span class="s1">industry</span><span class="s3">\&quot;</span><span class="s1">: null or specific sector (e.g., </span><span class="s3">\&quot;</span><span class="s1">Tech</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">Healthcare</span><span class="s3">\&quot;</span><span class="s1">), </span><span class="s3">\&quot;</span><span class="s1">location</span><span class="s3">\&quot;</span><span class="s1">: null or specific location (e.g., city or country), </span><span class="s3">\&quot;</span><span class="s1">job_roles</span><span class="s3">\&quot;</span><span class="s1">: [] or list of job titles mentioned }</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;3. In addition to the dictionary, provide a list of fields that are still missing or mention that all fields are complete.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;# Examples</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;**Example 1:**</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;**Input:**</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\&quot;</span><span class="s1">Text describing a tech company based in New York with 200+ employees and titles like CEO, Data Scientist, and Product Manager.</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;**Output:**</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;{</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;</span><span class="s1">user_info</span><span class="s3">\&quot;</span><span class="s1">: {</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">company_size</span><span class="s3">\&quot;</span><span class="s1">: </span><span class="s3">\&quot;</span><span class="s1">200+</span><span class="s3">\&quot;</span><span class="s1">,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">industry</span><span class="s3">\&quot;</span><span class="s1">: </span><span class="s3">\&quot;</span><span class="s1">Tech</span><span class="s3">\&quot;</span><span class="s1">,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">location</span><span class="s3">\&quot;</span><span class="s1">: </span><span class="s3">\&quot;</span><span class="s1">New York</span><span class="s3">\&quot;</span><span class="s1">,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">job_roles</span><span class="s3">\&quot;</span><span class="s1">: [</span><span class="s3">\&quot;</span><span class="s1">CEO</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">Data Scientist</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">Product Manager</span><span class="s3">\&quot;</span><span class="s1">]</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    },</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;</span><span class="s1">missing_fields</span><span class="s3">\&quot;</span><span class="s1">: []</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;}</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;**Example 2:**</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;**Input:**</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\&quot;</span><span class="s1">Description of a healthcare firm in Dubai without specific company size or job titles mentioned.</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;**Output:**</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;{</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;</span><span class="s1">user_info</span><span class="s3">\&quot;</span><span class="s1">: {</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">company_size</span><span class="s3">\&quot;</span><span class="s1">: null,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">industry</span><span class="s3">\&quot;</span><span class="s1">: </span><span class="s3">\&quot;</span><span class="s1">Healthcare</span><span class="s3">\&quot;</span><span class="s1">,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">location</span><span class="s3">\&quot;</span><span class="s1">: </span><span class="s3">\&quot;</span><span class="s1">Dubai</span><span class="s3">\&quot;</span><span class="s1">,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">job_roles</span><span class="s3">\&quot;</span><span class="s1">: []</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    },</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;</span><span class="s1">missing_fields</span><span class="s3">\&quot;</span><span class="s1">: [</span><span class="s3">\&quot;</span><span class="s1">company_size</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">job_roles</span><span class="s3">\&quot;</span><span class="s1">]</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;}</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;**Example 3:**</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;**Input:**</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\&quot;</span><span class="s1">A small tech startup with less than 10 employees, located in San Francisco. The team includes a CEO and a CTO.</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;**Output:**</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;{</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;</span><span class="s1">user_info</span><span class="s3">\&quot;</span><span class="s1">: {</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">company_size</span><span class="s3">\&quot;</span><span class="s1">: </span><span class="s3">\&quot;</span><span class="s1">1-10</span><span class="s3">\&quot;</span><span class="s1">,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">industry</span><span class="s3">\&quot;</span><span class="s1">: </span><span class="s3">\&quot;</span><span class="s1">Tech</span><span class="s3">\&quot;</span><span class="s1">,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">location</span><span class="s3">\&quot;</span><span class="s1">: </span><span class="s3">\&quot;</span><span class="s1">San Francisco</span><span class="s3">\&quot;</span><span class="s1">,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">job_roles</span><span class="s3">\&quot;</span><span class="s1">: [</span><span class="s3">\&quot;</span><span class="s1">CEO</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">CTO</span><span class="s3">\&quot;</span><span class="s1">]</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    },</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;</span><span class="s1">missing_fields</span><span class="s3">\&quot;</span><span class="s1">: []</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;}</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\&quot;\&quot;\&quot;</span><span class="s1">&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;d84b729eabeef5f3&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">178</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;markdown&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: </span><span class="s1">&quot;### Extract user fields:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;51261c569372d48a&quot;</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.249051Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.246957Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: </span><span class="s1">&quot;&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;5fbdd77185121ec8&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">null</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.260009Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.257064Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;REQUIRED_FIELDS = {</span><span class="s3">\&quot;</span><span class="s1">company_size</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">industry</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">job_roles</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">location</span><span class="s3">\&quot;</span><span class="s1">}</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;# Global dictionary to keep track of extracted fields and missing fields</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;recorded_fields = {</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;</span><span class="s1">user_info</span><span class="s3">\&quot;</span><span class="s1">: {},</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;</span><span class="s1">missing_fields</span><span class="s3">\&quot;</span><span class="s1">: list(REQUIRED_FIELDS)  # Initially, all fields are required</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;}&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;73478c784817f89f&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">179</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.275567Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.272656Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;def extract_user_fields(message, model):</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    prompt = field_extraction_prompt + f</span><span class="s3">\&quot;\\</span><span class="s1">nInput: {message}</span><span class="s3">\\</span><span class="s1">nResponse format (JSON): {{'company_size': '', 'industry': '', 'job_roles': '', 'location': ''}}</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    try: </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        llm_response = model.predict(prompt) </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        llm_extracted_data = json.loads(llm_response)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        print(llm_extracted_data)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        return llm_extracted_data</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    except KeyError as e:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        print(f</span><span class="s3">\&quot;</span><span class="s1">Missing key in template formatting: {e}</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    except json.JSONDecodeError as e:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        print(f</span><span class="s3">\&quot;</span><span class="s1">Failed to decode JSON response: {e}</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;903137cf2cfdec8f&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">180</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.289699Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:00.287710Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: </span><span class="s1">&quot;&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;27cb72ace8b69288&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">null</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;# Test the extraction</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;user_input = </span><span class="s3">\&quot;</span><span class="s1">A startup</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;extracted_data = extract_user_fields(user_input, model)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;print(</span><span class="s3">\&quot;</span><span class="s1">Extracted Data:</span><span class="s3">\&quot;</span><span class="s1">, extracted_data)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;# Define the required fields</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;required_fields = ['industry', 'company_size', 'location', 'job_roles']</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;print(</span><span class="s3">\&quot;</span><span class="s1">Missing Fields:</span><span class="s3">\&quot;</span><span class="s1">, extracted_data[</span><span class="s3">\&quot;</span><span class="s1">missing_fields</span><span class="s3">\&quot;</span><span class="s1">])</span><span class="s3">\n</span><span class="s1">&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;5a2d24e0fc0aa8a&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">null</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:02.488181Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:02.484456Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;# Memory initialization</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;memory_state = {</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;</span><span class="s1">conversation</span><span class="s3">\&quot;</span><span class="s1">: [],</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;</span><span class="s1">extracted_data</span><span class="s3">\&quot;</span><span class="s1">: {</span><span class="s3">\&quot;</span><span class="s1">company_size</span><span class="s3">\&quot;</span><span class="s1">: None, </span><span class="s3">\&quot;</span><span class="s1">industry</span><span class="s3">\&quot;</span><span class="s1">: None, </span><span class="s3">\&quot;</span><span class="s1">job_roles</span><span class="s3">\&quot;</span><span class="s1">: None, </span><span class="s3">\&quot;</span><span class="s1">location</span><span class="s3">\&quot;</span><span class="s1">: None},</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;</span><span class="s1">missing_fields</span><span class="s3">\&quot;</span><span class="s1">: [</span><span class="s3">\&quot;</span><span class="s1">company_size</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">industry</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">job_roles</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">location</span><span class="s3">\&quot;</span><span class="s1">],</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;}</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;def update_memory_with_response(llm_memory_state, llm_extracted_data):</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    for field, value in llm_extracted_data.items():</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        if value in llm_memory_state[</span><span class="s3">\&quot;</span><span class="s1">extracted_data</span><span class="s3">\&quot;</span><span class="s1">]:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            llm_memory_state[</span><span class="s3">\&quot;</span><span class="s1">extracted_data</span><span class="s3">\&quot;</span><span class="s1">][field] = value</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            llm_memory_state[</span><span class="s3">\&quot;</span><span class="s1">missing_fields</span><span class="s3">\&quot;</span><span class="s1">].remove(field)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    return llm_memory_state</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;805a060bc3255b5c&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">182</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T11:56:57.987152Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T11:56:57.979181Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;def create_dynamic_prompt(user_input, missing_fields):</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    prompt = f</span><span class="s3">\&quot;</span><span class="s1">Extract the following details: {', '.join(missing_fields)}.</span><span class="s3">\\</span><span class="s1">n</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    prompt += f</span><span class="s3">\&quot;</span><span class="s1">Input: {user_input}</span><span class="s3">\\</span><span class="s1">nResponse format (JSON): {{'company_size': '', 'industry': '', 'job_roles': '', 'location': ''}}</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    return prompt</span><span class="s3">\n</span><span class="s1">&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;ba1707b7f19327e6&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">194</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">null</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: </span><span class="s1">&quot;&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;a5e1d30ecf5ec969&quot;</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T13:28:23.706608Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T13:28:23.683790Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;def feedback_loop(model, memory_state):</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;\&quot;\&quot;</span><span class="s1">Iterative dialog with the user to complete missing fields.</span><span class="s3">\&quot;\&quot;\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    print(</span><span class="s3">\&quot;</span><span class="s1">Agent: Let's gather some details about your target.</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    while memory_state[</span><span class="s3">\&quot;</span><span class="s1">missing_fields</span><span class="s3">\&quot;</span><span class="s1">]:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        missing_fields = memory_state[</span><span class="s3">\&quot;</span><span class="s1">missing_fields</span><span class="s3">\&quot;</span><span class="s1">]    </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        dynamic_prompt = create_dynamic_prompt(</span><span class="s3">\&quot;\&quot;</span><span class="s1">, missing_fields)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # Ask the user for the missing field</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        user_input = input(f</span><span class="s3">\&quot;</span><span class="s1">Agent: Please provide details about {', '.join(missing_fields)}.</span><span class="s3">\\</span><span class="s1">nUser: </span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # Update the prompt with user input</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        full_prompt = create_dynamic_prompt(user_input, missing_fields)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # Extract the user input</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        extracted_data = extract_user_fields(full_prompt, model)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # Update the memory state</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        memory_state = update_memory_with_response(memory_state, extracted_data)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # Log the conversation</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        memory_state[</span><span class="s3">\&quot;</span><span class="s1">conversation</span><span class="s3">\&quot;</span><span class="s1">].append({</span><span class="s3">\&quot;</span><span class="s1">role</span><span class="s3">\&quot;</span><span class="s1">: </span><span class="s3">\&quot;</span><span class="s1">user</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">content</span><span class="s3">\&quot;</span><span class="s1">: user_input})</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        memory_state[</span><span class="s3">\&quot;</span><span class="s1">conversation</span><span class="s3">\&quot;</span><span class="s1">].append({</span><span class="s3">\&quot;</span><span class="s1">role</span><span class="s3">\&quot;</span><span class="s1">: </span><span class="s3">\&quot;</span><span class="s1">agent</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">content</span><span class="s3">\&quot;</span><span class="s1">: f</span><span class="s3">\&quot;</span><span class="s1">Extracted: {extracted_data}</span><span class="s3">\&quot;</span><span class="s1">})</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        print(</span><span class="s3">\&quot;</span><span class="s1">Memory State:</span><span class="s3">\&quot;</span><span class="s1">, memory_state)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        print(</span><span class="s3">\&quot;</span><span class="s1">Agent: Thank you! All fields are complete.</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    return memory_state&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;f4ded6f865071fd7&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">195</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T13:28:48.436161Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T13:28:47.375223Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;validation_prompt = create_dynamic_prompt(user_input, [</span><span class="s3">\&quot;</span><span class="s1">company_size</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">location</span><span class="s3">\&quot;</span><span class="s1">])</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;validation_response = model.predict(validation_prompt)&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;cb70eb81d1595d4a&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">196</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">null</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;extracted_data = extract_user_fields(user_input, model)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;refined_query = create_dynamic_prompt(</span><span class="s3">\&quot;\&quot;</span><span class="s1">, [</span><span class="s3">\&quot;</span><span class="s1">industry</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">location</span><span class="s3">\&quot;</span><span class="s1">])&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;a5790afc7eb00e17&quot;</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;markdown&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: </span><span class="s1">&quot;## Query Matching and storage&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;ecd17c63b81b4fcc&quot;</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T14:37:51.085650Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T14:37:51.081277Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;def query_matching(user_query, llm_vector_store, llm_responses, threshold=0.5):</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;\&quot;\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    Matches a user query to the most similar predefined question in the vector store.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    Args:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        user_query (str): The query from the user.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        llm_vector_store (FAISS): Vector store containing embeddings of predefined questions.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        llm_responses (dict): Dictionary mapping predefined questions to responses.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        threshold (float): Minimum similarity score to consider a match.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    Returns:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        str: The matched response or a fallback response if no match is found.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;\&quot;\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    try: </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        matches = vector_store.similarity_search_with_score(user_query, k=1)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        if not matches:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            return </span><span class="s3">\&quot;</span><span class="s1">Sorry, I couldn't find a relevant match for your query.</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # Retrieve the best match and its similarity score</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        best_match, score = matches[0]  # Unpack the first result (document, score)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        print(f'best_match:{best_match.page_content}')</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        print(f'score:{score}')</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        if score &gt;= threshold:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            question= best_match.page_content    </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            return llm_responses.get(question, </span><span class="s3">\&quot;</span><span class="s1">No Predefined response found</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        else:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            return </span><span class="s3">\&quot;</span><span class="s1">Sorry, your query doesn't match any known question closely enough.</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    except Exception as e:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        print(f</span><span class="s3">\&quot;</span><span class="s1">Error during query matching: {e}</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        return </span><span class="s3">\&quot;</span><span class="s1">No match found.</span><span class="s3">\&quot;</span><span class="s1">&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;f80330a0796fedec&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">225</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T14:37:54.487928Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T14:37:53.308659Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;from langchain.vectorstores import FAISS</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;from langchain_cohere import CohereEmbeddings</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;import json</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;import pandas as pd</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;# Load the dataset</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;qa_dataset = pd.read_csv('./customer_leads_agent_qa_data_csv.csv', delimiter=',').to_dict(orient='records')</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;# Convert questions into embeddings</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;embeddings = CohereEmbeddings(cohere_api_key=</span><span class="s3">\&quot;</span><span class="s1">QTIAR07ZVhcAVAPrUTHQozivAbRFhmhdoWwPsclg</span><span class="s3">\&quot;</span><span class="s1">, model=</span><span class="s3">\&quot;</span><span class="s1">embed-english-light-v3.0</span><span class="s3">\&quot; </span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;questions = [item[</span><span class="s3">\&quot;</span><span class="s1">prompt_text</span><span class="s3">\&quot;</span><span class="s1">] for item in qa_dataset]</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;vector_store = FAISS.from_texts(questions, embeddings)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;# Map each vector to its expected response</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;responses = {item[</span><span class="s3">\&quot;</span><span class="s1">prompt_text</span><span class="s3">\&quot;</span><span class="s1">]: item[</span><span class="s3">\&quot;</span><span class="s1">expected_response</span><span class="s3">\&quot;</span><span class="s1">] for item in qa_dataset}</span><span class="s3">\n</span><span class="s1">&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;fa896d452afe896e&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">226</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T14:37:55.331496Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T14:37:55.069018Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;# User's input query</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;user_query = </span><span class="s3">\&quot;</span><span class="s1">What unique value do they offer?</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;# Query matching</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;response = query_matching(user_query, vector_store, responses, threshold=0.3)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;# Print the response</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;print(</span><span class="s3">\&quot;</span><span class="s1">Agent's Response:</span><span class="s3">\&quot;</span><span class="s1">, response)</span><span class="s3">\n</span><span class="s1">&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;b93c1cbfbb752dc3&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [</span>
+    <span class="s0">{</span>
+     <span class="s1">&quot;name&quot;</span><span class="s0">: </span><span class="s1">&quot;stdout&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;output_type&quot;</span><span class="s0">: </span><span class="s1">&quot;stream&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;text&quot;</span><span class="s0">: [</span>
+      <span class="s1">&quot;best_match:</span><span class="s3">\&quot;</span><span class="s1">What unique value do they offer?</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+      <span class="s1">&quot;score:0.7451424598693848</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+      <span class="s1">&quot;Agent's Response: </span><span class="s3">\&quot;</span><span class="s1">They offer unique value in areas like [strengths].</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span>
+     <span class="s0">]</span>
+    <span class="s0">}</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">227</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:03.737688Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:03.734516Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;def merge_memory(current_memory, new_memory):</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    for key, value in new_memory.items():</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        if isinstance(value, dict) and key in current_memory:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            # Recursive merge for nested dictionaries</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            merge_memory(current_memory[key], value)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        else:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            # Update scalar values or new keys</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            current_memory[key] = value&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;fcc2c1cb1c618145&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">186</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:03.747193Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:03.744526Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;# def handle_no_match(llm_memory_state, llm_model):</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;#     </span><span class="s3">\&quot;\&quot;\&quot;</span><span class="s1">Fallback to feedback loop when no match is found.</span><span class="s3">\&quot;\&quot;\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;#     print(</span><span class="s3">\&quot;</span><span class="s1">Agent: I couldn't find a predefined match. Let's refine your query.</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;#     llm_memory_state, llm_extracted_data = feedback_loop(memory_state=memory_state, model=llm_model)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;#     return llm_memory_state, llm_extracted_data</span><span class="s3">\n</span><span class="s1">&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;dec3fac87074e43a&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">187</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T14:00:53.882686Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T14:00:53.769074Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;import json</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;feedback_prompt_template = f</span><span class="s3">\&quot;\&quot;\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;# Role</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;You are a Data Extraction Agent responsible for collecting specific business details iteratively.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;# Objective</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;Your task is to:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;1. Update the `memory_state` dictionary with any new information extracted from `user_input`.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;2. Identify any fields still missing and construct a `next_prompt` to ask the user for these details.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;3. If all required fields are complete, indicate this in the `next_prompt`.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;# Memory State: {memory_state}</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;# User Input: {user_input}</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;# Response Format</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;Respond in the following JSON format:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;{</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;</span><span class="s1">updated_memory</span><span class="s3">\&quot;</span><span class="s1">: {memory_state},</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;</span><span class="s1">next_prompt</span><span class="s3">\&quot;</span><span class="s1">: </span><span class="s3">\&quot;</span><span class="s1">string</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;}</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\&quot;\&quot;\&quot;\n</span><span class="s1">&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;28b20a976c4c154b&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [</span>
+    <span class="s0">{</span>
+     <span class="s1">&quot;ename&quot;</span><span class="s0">: </span><span class="s1">&quot;ValueError&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;evalue&quot;</span><span class="s0">: </span><span class="s1">&quot;Invalid format specifier ' {'conversation': [], 'extracted_data': {'company_size': None, 'industry': None, 'job_roles': None, 'location': None}, 'missing_fields': ['company_size', 'industry', 'job_roles', 'location']},</span><span class="s3">\n    \&quot;</span><span class="s1">next_prompt</span><span class="s3">\&quot;</span><span class="s1">: </span><span class="s3">\&quot;</span><span class="s1">string</span><span class="s3">\&quot;\n</span><span class="s1">' for object of type 'str'&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;output_type&quot;</span><span class="s0">: </span><span class="s1">&quot;error&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;traceback&quot;</span><span class="s0">: [</span>
+      <span class="s1">&quot;</span><span class="s3">\u001B</span><span class="s1">[1;31m---------------------------------------------------------------------------</span><span class="s3">\u001B</span><span class="s1">[0m&quot;</span><span class="s0">,</span>
+      <span class="s1">&quot;</span><span class="s3">\u001B</span><span class="s1">[1;31mValueError</span><span class="s3">\u001B</span><span class="s1">[0m                                Traceback (most recent call last)&quot;</span><span class="s0">,</span>
+      <span class="s1">&quot;Cell </span><span class="s3">\u001B</span><span class="s1">[1;32mIn[202], line 3</span><span class="s3">\u001B</span><span class="s1">[0m</span><span class="s3">\n\u001B</span><span class="s1">[0;32m      1</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\u001B</span><span class="s1">[38;5;28;01mimport</span><span class="s3">\u001B</span><span class="s1">[39;00m </span><span class="s3">\u001B</span><span class="s1">[38;5;21;01mjson</span><span class="s3">\u001B</span><span class="s1">[39;00m</span><span class="s3">\n\u001B</span><span class="s1">[1;32m----&gt; 3</span><span class="s3">\u001B</span><span class="s1">[0m feedback_prompt_template </span><span class="s3">\u001B</span><span class="s1">[38;5;241m=</span><span class="s3">\u001B</span><span class="s1">[39m </span><span class="s3">\u001B</span><span class="s1">[38;5;124mf</span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\u001B</span><span class="s1">[38;5;124m</span><span class="s3">\&quot;\&quot;\&quot;\u001B</span><span class="s1">[39m</span><span class="s3">\n\u001B</span><span class="s1">[0;32m      4</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\u001B</span><span class="s1">[38;5;124m# Role</span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\n\u001B</span><span class="s1">[0;32m      5</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\u001B</span><span class="s1">[38;5;124mYou are a Data Extraction Agent responsible for collecting specific business details iteratively.</span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\n\u001B</span><span class="s1">[0;32m      6</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\n\u001B</span><span class="s1">[0;32m      7</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\u001B</span><span class="s1">[38;5;124m# Objective</span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\n\u001B</span><span class="s1">[0;32m      8</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\u001B</span><span class="s1">[38;5;124mYour task is to:</span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\n\u001B</span><span class="s1">[0;32m      9</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\u001B</span><span class="s1">[38;5;124m1. Update the `memory_state` dictionary with any new information extracted from `user_input`.</span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\n\u001B</span><span class="s1">[0;32m     10</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\u001B</span><span class="s1">[38;5;124m2. Identify any fields still missing and construct a `next_prompt` to ask the user for these details.</span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\n\u001B</span><span class="s1">[0;32m     11</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\u001B</span><span class="s1">[38;5;124m3. If all required fields are complete, indicate this in the `next_prompt`.</span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\n\u001B</span><span class="s1">[0;32m     12</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\n\u001B</span><span class="s1">[0;32m     13</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\u001B</span><span class="s1">[38;5;124m# Memory State: </span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\u001B</span><span class="s1">[38;5;132;01m{</span><span class="s3">\u001B</span><span class="s1">[39;00mmemory_state</span><span class="s3">\u001B</span><span class="s1">[38;5;132;01m}</span><span class="s3">\u001B</span><span class="s1">[39;00m</span><span class="s3">\n\u001B</span><span class="s1">[0;32m     14</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\n\u001B</span><span class="s1">[0;32m     15</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\u001B</span><span class="s1">[38;5;124m# User Input: </span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\u001B</span><span class="s1">[38;5;132;01m{</span><span class="s3">\u001B</span><span class="s1">[39;00muser_input</span><span class="s3">\u001B</span><span class="s1">[38;5;132;01m}</span><span class="s3">\u001B</span><span class="s1">[39;00m</span><span class="s3">\n\u001B</span><span class="s1">[0;32m     16</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\n\u001B</span><span class="s1">[0;32m     17</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\u001B</span><span class="s1">[38;5;124m# Response Format</span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\n\u001B</span><span class="s1">[0;32m     18</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\u001B</span><span class="s1">[38;5;124mRespond in the following JSON format:</span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\n\u001B</span><span class="s1">[0;32m     19</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\u001B</span><span class="s1">[38;5;132;01m{</span><span class="s3">\u001B</span><span class="s1">[39;00m</span><span class="s3">\n\u001B</span><span class="s1">[0;32m     20</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\u001B</span><span class="s1">[38;5;250m    </span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\u001B</span><span class="s1">[38;5;124m</span><span class="s3">\&quot;\u001B</span><span class="s1">[39m</span><span class="s3">\u001B</span><span class="s1">[38;5;124mupdated_memory</span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\u001B</span><span class="s1">[38;5;124m</span><span class="s3">\&quot;\u001B</span><span class="s1">[39m</span><span class="s3">\u001B</span><span class="s1">[38;5;132;01m:</span><span class="s3">\u001B</span><span class="s1">[39;00m</span><span class="s3">\u001B</span><span class="s1">[38;5;124m </span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\u001B</span><span class="s1">[38;5;132;01m{</span><span class="s3">\u001B</span><span class="s1">[39;00mmemory_state</span><span class="s3">\u001B</span><span class="s1">[38;5;132;01m}</span><span class="s3">\u001B</span><span class="s1">[39;00m</span><span class="s3">\u001B</span><span class="s1">[38;5;124m,</span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\n\u001B</span><span class="s1">[0;32m     21</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\u001B</span><span class="s1">[38;5;124m    </span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\u001B</span><span class="s1">[38;5;124m</span><span class="s3">\&quot;\u001B</span><span class="s1">[39m</span><span class="s3">\u001B</span><span class="s1">[38;5;124mnext_prompt</span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\u001B</span><span class="s1">[38;5;124m</span><span class="s3">\&quot;\u001B</span><span class="s1">[39m</span><span class="s3">\u001B</span><span class="s1">[38;5;124m: </span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\u001B</span><span class="s1">[38;5;124m</span><span class="s3">\&quot;\u001B</span><span class="s1">[39m</span><span class="s3">\u001B</span><span class="s1">[38;5;124mstring</span><span class="s3">\u001B</span><span class="s1">[39m</span><span class="s3">\u001B</span><span class="s1">[38;5;124m</span><span class="s3">\&quot;\u001B</span><span class="s1">[39m</span><span class="s3">\n\u001B</span><span class="s1">[0;32m     22</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\u001B</span><span class="s1">[38;5;132;01m}</span><span class="s3">\u001B</span><span class="s1">[39;00m</span><span class="s3">\n\u001B</span><span class="s1">[0;32m     23</span><span class="s3">\u001B</span><span class="s1">[0m </span><span class="s3">\u001B</span><span class="s1">[38;5;124m</span><span class="s3">\&quot;\&quot;\&quot;\u001B</span><span class="s1">[39m</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+      <span class="s1">&quot;</span><span class="s3">\u001B</span><span class="s1">[1;31mValueError</span><span class="s3">\u001B</span><span class="s1">[0m: Invalid format specifier ' {'conversation': [], 'extracted_data': {'company_size': None, 'industry': None, 'job_roles': None, 'location': None}, 'missing_fields': ['company_size', 'industry', 'job_roles', 'location']},</span><span class="s3">\n    \&quot;</span><span class="s1">next_prompt</span><span class="s3">\&quot;</span><span class="s1">: </span><span class="s3">\&quot;</span><span class="s1">string</span><span class="s3">\&quot;\n</span><span class="s1">' for object of type 'str'&quot;</span>
+     <span class="s0">]</span>
+    <span class="s0">}</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">202</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:48:03.776920100Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T07:50:29.086302Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;import copy</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;def model_driven_feedback_loop(fcn_user_input, fcn_memory_state, model):</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;\&quot;\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    Handles feedback loop by using the model to manage memory and prompts dynamically.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    Args:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        fcn_user_input (str): The current user input.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        fcn_memory_state (dict): Dictionary containing collected data and missing fields.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        model (ChatOpenAI): Language model instance.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    Returns:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        updated_memory (dict): Updated memory state with new extracted data.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        next_prompt (str): Next prompt for the user.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;\&quot;\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    try:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # Prepare memory for the prompt</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        memory_state_str = json.dumps(fcn_memory_state, indent=4)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        updated_memory = fcn_memory_state.get(</span><span class="s3">\&quot;</span><span class="s1">updated_memory</span><span class="s3">\&quot;</span><span class="s1">, {})</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        updated_memory_str = json.dumps(updated_memory, indent=4)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # Construct the prompt</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        prompt = f</span><span class="s3">\&quot;\&quot;\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        Role: You are a Data Extraction Agent responsible for collecting specific business details iteratively. </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # Objective</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        Your task is to:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        1. Update the `memory_state` dictionary with any new information extracted from `user_input`.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        2. Identify any fields still missing and construct a `next_prompt` to ask the user for these details.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        3. If all required fields are complete, indicate this in the `next_prompt`.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # Memory State:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        {memory_state_str}</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # User Input:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        {fcn_user_input}</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # Response Format</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        Respond in the following JSON format:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        {{</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            </span><span class="s3">\&quot;</span><span class="s1">updated_memory</span><span class="s3">\&quot;</span><span class="s1">: {updated_memory_str},</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            </span><span class="s3">\&quot;</span><span class="s1">next_prompt</span><span class="s3">\&quot;</span><span class="s1">: </span><span class="s3">\&quot;</span><span class="s1">string</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        }}</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;\&quot;\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # Debugging: Print the constructed prompt</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        print(f</span><span class="s3">\&quot;</span><span class="s1">Prompt sent to model: {prompt}</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # Generate the response</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        response = model.predict(prompt)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        print(f</span><span class="s3">\&quot;</span><span class="s1">Response from model: {response}</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # Parse the response</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        response_data = json.loads(response)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # Update memory</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        fcn_updated_memory = copy.deepcopy(fcn_memory_state)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        merge_memory(fcn_updated_memory, response_data.get(</span><span class="s3">\&quot;</span><span class="s1">updated_memory</span><span class="s3">\&quot;</span><span class="s1">, {}))</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # Debugging: Check memory updates</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        print(</span><span class="s3">\&quot;</span><span class="s1">Original memory state:</span><span class="s3">\&quot;</span><span class="s1">, json.dumps(fcn_memory_state, indent=4))</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        print(</span><span class="s3">\&quot;</span><span class="s1">Response data:</span><span class="s3">\&quot;</span><span class="s1">, json.dumps(response_data, indent=4))</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        print(</span><span class="s3">\&quot;</span><span class="s1">Updated memory state:</span><span class="s3">\&quot;</span><span class="s1">, json.dumps(fcn_updated_memory, indent=4))</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        # Get the next prompt</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        fcn_next_prompt = response_data.get(</span><span class="s3">\&quot;</span><span class="s1">next_prompt</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">All required fields are complete.</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        return fcn_updated_memory, fcn_next_prompt</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    except json.JSONDecodeError as e:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        print(f</span><span class="s3">\&quot;</span><span class="s1">Error parsing JSON response: {e}</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        return fcn_memory_state, </span><span class="s3">\&quot;</span><span class="s1">An error occurred. Please try again.</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    except Exception as e:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        print(f</span><span class="s3">\&quot;</span><span class="s1">Unexpected error: {e}</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        return fcn_memory_state, </span><span class="s3">\&quot;</span><span class="s1">An error occurred. Please try again.</span><span class="s3">\&quot;</span><span class="s1">&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;72a9aabc4061128e&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">140</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;markdown&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: </span><span class="s1">&quot;&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;30bb8145ca48851b&quot;</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T14:53:47.153614Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T14:53:47.144120Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;user_inputs_example = [</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;</span><span class="s1">I am targeting companies in San Francisco.</span><span class="s3">\&quot;</span><span class="s1">,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;</span><span class="s1">These companies should have 500+ employees.</span><span class="s3">\&quot;</span><span class="s1">,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;</span><span class="s1">I want to reach CTOs and Product Managers.</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;]</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;memory_state_example = {</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;</span><span class="s1">updated_memory</span><span class="s3">\&quot;</span><span class="s1">: {</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">company_size</span><span class="s3">\&quot;</span><span class="s1">: None,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">industry</span><span class="s3">\&quot;</span><span class="s1">: None,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">location</span><span class="s3">\&quot;</span><span class="s1">: None,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">job_roles</span><span class="s3">\&quot;</span><span class="s1">: []</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    }</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;}</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;7c51be243b1d34e&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">228</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;markdown&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: </span><span class="s1">&quot;&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;577eb830191912df&quot;</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;# Iterative feedback loop</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;for user_input in user_inputs_example:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    memory_state_example, next_prompt = model_driven_feedback_loop(</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        fcn_user_input=user_input,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        fcn_memory_state=memory_state_example,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        model=model</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    )</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    print(f</span><span class="s3">\&quot;</span><span class="s1">Agent: {next_prompt}</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    print(f</span><span class="s3">\&quot;</span><span class="s1">Updated Memory State: {json.dumps(memory_state_example, indent=4)}</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    if </span><span class="s3">\&quot;</span><span class="s1">All required fields are complete</span><span class="s3">\&quot; </span><span class="s1">in next_prompt:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        break</span><span class="s3">\n</span><span class="s1">&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;5c3b165deb504264&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">null</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;markdown&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: </span><span class="s1">&quot;&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;4278b5e8a410195d&quot;</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T16:10:28.668463Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T16:10:28.621190Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;def chat_with_model(model_fcn, memory_state_fcn):</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;\&quot;\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    Simulates a chat between the user and the AI model using the model-driven feedback loop.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    Args:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        model_fcn (ChatOpenAI): The AI model instance.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        memory_state_fcn (dict): Tracks extracted data and missing fields.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    Returns:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        None: Continuously interacts with the user until all fields are collected.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;\&quot;\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    print(</span><span class="s3">\&quot;</span><span class="s1">Agent: Let's gather the necessary details. Feel free to provide information step by step.</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    debug_mode = True  # Set this flag to False in production    </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    while True:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        try:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                 </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            if memory_state_fcn[</span><span class="s3">\&quot;</span><span class="s1">missing_fields</span><span class="s3">\&quot;</span><span class="s1">]:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                next_prompt_fcn = f</span><span class="s3">\&quot;</span><span class="s1">Please provide the {memory_state_fcn['missing_fields'][0]}.</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            else:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                next_prompt_fcn = </span><span class="s3">\&quot;</span><span class="s1">All required fields are complete. Do you need any further assistance?</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot; </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;       </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            # Display the AI's next prompt to the user</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            # Display the AI's next prompt to the user</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            print(f</span><span class="s3">\&quot;</span><span class="s1">Agent: {next_prompt_fcn}</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            # Get user input</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            user_input = input(</span><span class="s3">\&quot;</span><span class="s1">User: </span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                        # Exit condition</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            if user_input.lower() in [</span><span class="s3">\&quot;</span><span class="s1">exit</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">quit</span><span class="s3">\&quot;</span><span class="s1">, </span><span class="s3">\&quot;</span><span class="s1">done</span><span class="s3">\&quot;</span><span class="s1">]:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                print(</span><span class="s3">\&quot;</span><span class="s1">Agent: Thank you for the information. Goodbye!</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                break</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            if not user_input.strip():</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                print(</span><span class="s3">\&quot;</span><span class="s1">Agent: I didn't catch that. Could you provide more details?</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                continue</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            # Match the user query to a predefined response</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            response = query_matching(user_input, vector_store, responses)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            if response:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                print(</span><span class="s3">\&quot;</span><span class="s1">Agent:</span><span class="s3">\&quot;</span><span class="s1">, response)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            else:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                # Run the feedback loop with the user's input</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                memory_state_fcn, next_prompt_fcn = model_driven_feedback_loop(</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                    fcn_user_input=user_input,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                    fcn_memory_state=memory_state_fcn,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                    model=model_fcn</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                )</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            # Debugging: Log the updated memory state if debugging is enabled</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            if debug_mode:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                print(f</span><span class="s3">\&quot;</span><span class="s1">Updated Memory State: {json.dumps(memory_state_fcn, indent=4)}</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            # Check if all fields are complete</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            if </span><span class="s3">\&quot;</span><span class="s1">All required fields are complete</span><span class="s3">\&quot; </span><span class="s1">in next_prompt_fcn:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                print(f</span><span class="s3">\&quot;</span><span class="s1">Agent: {next_prompt_fcn}</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                print(f</span><span class="s3">\&quot;</span><span class="s1">Final Memory State: {json.dumps(memory_state_fcn, indent=4)}</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;                break</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        except Exception as e:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            print(f</span><span class="s3">\&quot;</span><span class="s1">An error occurred: {e}</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            print(</span><span class="s3">\&quot;</span><span class="s1">Agent: I encountered an issue. Please try again.</span><span class="s3">\&quot;</span><span class="s1">)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            break&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;14e36ad4228d95d1&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [</span>
+    <span class="s0">{</span>
+     <span class="s1">&quot;name&quot;</span><span class="s0">: </span><span class="s1">&quot;stdout&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;output_type&quot;</span><span class="s0">: </span><span class="s1">&quot;stream&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;text&quot;</span><span class="s0">: [</span>
+      <span class="s1">&quot;Prompt: What is your name?</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+      <span class="s1">&quot;User input: Alice</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+      <span class="s1">&quot;All information has been collected.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+      <span class="s1">&quot;{'missing_fields': [], 'next_prompt': 'Thank you! Any more information to provide?', 'user_name': 'Alice'}</span><span class="s3">\n</span><span class="s1">&quot;</span>
+     <span class="s0">]</span>
+    <span class="s0">}</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">238</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;markdown&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: </span><span class="s1">&quot;&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;3883207902dece1b&quot;</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:53:33.269092Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T08:53:33.265879Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;def initialize_agent():</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;\&quot;\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    Initializes the model and memory state for the chat agent.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    Returns:</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        model_fcn (ChatCohere): The AI model instance.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        memory_state_fcn (dict): The initial memory state.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    </span><span class="s3">\&quot;\&quot;\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    # Initialize model</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    model_fcn = ChatCohere(cohere_api_key=</span><span class="s3">\&quot;</span><span class="s1">QTIAR07ZVhcAVAPrUTHQozivAbRFhmhdoWwPsclg</span><span class="s3">\&quot;</span><span class="s1">, temperature=0.1)</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    # Initialize memory state</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    memory_state_fcn = {</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">updated_memory</span><span class="s3">\&quot;</span><span class="s1">: {</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            </span><span class="s3">\&quot;</span><span class="s1">company_size</span><span class="s3">\&quot;</span><span class="s1">: None,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            </span><span class="s3">\&quot;</span><span class="s1">industry</span><span class="s3">\&quot;</span><span class="s1">: None,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            </span><span class="s3">\&quot;</span><span class="s1">location</span><span class="s3">\&quot;</span><span class="s1">: None,</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;            </span><span class="s3">\&quot;</span><span class="s1">job_roles</span><span class="s3">\&quot;</span><span class="s1">: []</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        },</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;        </span><span class="s3">\&quot;</span><span class="s1">next_prompt</span><span class="s3">\&quot;</span><span class="s1">: </span><span class="s3">\&quot;</span><span class="s1">How may I help you today?</span><span class="s3">\&quot;\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    }</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;    return model_fcn, memory_state_fcn</span><span class="s3">\n</span><span class="s1">&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;7b0d93a8076834c6&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">191</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T16:07:14.504625Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T16:07:14.501826Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: </span><span class="s1">&quot;initial_memory_state = {</span><span class="s3">\&quot;</span><span class="s1">missing_fields</span><span class="s3">\&quot;</span><span class="s1">: [</span><span class="s3">\&quot;</span><span class="s1">user_name</span><span class="s3">\&quot;</span><span class="s1">], </span><span class="s3">\&quot;</span><span class="s1">next_prompt</span><span class="s3">\&quot;</span><span class="s1">: </span><span class="s3">\&quot;</span><span class="s1">What is your name?</span><span class="s3">\&quot;</span><span class="s1">}</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;73c5bb710b79a044&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">236</span>
+  <span class="s0">},</span>
+  <span class="s0">{</span>
+   <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;ExecuteTime&quot;</span><span class="s0">: {</span>
+     <span class="s1">&quot;end_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T16:10:53.074114Z&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;start_time&quot;</span><span class="s0">: </span><span class="s1">&quot;2024-11-23T16:10:53.070799Z&quot;</span>
+    <span class="s0">}</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;cell_type&quot;</span><span class="s0">: </span><span class="s1">&quot;code&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;source&quot;</span><span class="s0">: [</span>
+    <span class="s1">&quot;if __name__ == </span><span class="s3">\&quot;</span><span class="s1">__main__</span><span class="s3">\&quot;</span><span class="s1">:    </span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;   chat_with_model(model_fcn=model, memory_state_fcn=initial_memory_state)</span><span class="s3">\n</span><span class="s1">&quot;</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;id&quot;</span><span class="s0">: </span><span class="s1">&quot;1efc81ac9e5dd9dd&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;outputs&quot;</span><span class="s0">: [</span>
+    <span class="s0">{</span>
+     <span class="s1">&quot;name&quot;</span><span class="s0">: </span><span class="s1">&quot;stdout&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;output_type&quot;</span><span class="s0">: </span><span class="s1">&quot;stream&quot;</span><span class="s0">,</span>
+     <span class="s1">&quot;text&quot;</span><span class="s0">: [</span>
+      <span class="s1">&quot;All information has been collected.</span><span class="s3">\n</span><span class="s1">&quot;</span><span class="s0">,</span>
+      <span class="s1">&quot;{'missing_fields': [], 'next_prompt': 'Thank you! Any more information to provide?', 'user_name': 'Alice'}</span><span class="s3">\n</span><span class="s1">&quot;</span>
+     <span class="s0">]</span>
+    <span class="s0">}</span>
+   <span class="s0">],</span>
+   <span class="s1">&quot;execution_count&quot;</span><span class="s0">: </span><span class="s2">239</span>
+  <span class="s0">}</span>
+ <span class="s0">],</span>
+ <span class="s1">&quot;metadata&quot;</span><span class="s0">: {</span>
+  <span class="s1">&quot;kernelspec&quot;</span><span class="s0">: {</span>
+   <span class="s1">&quot;display_name&quot;</span><span class="s0">: </span><span class="s1">&quot;Python 3&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;language&quot;</span><span class="s0">: </span><span class="s1">&quot;python&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;name&quot;</span><span class="s0">: </span><span class="s1">&quot;python3&quot;</span>
+  <span class="s0">},</span>
+  <span class="s1">&quot;language_info&quot;</span><span class="s0">: {</span>
+   <span class="s1">&quot;codemirror_mode&quot;</span><span class="s0">: {</span>
+    <span class="s1">&quot;name&quot;</span><span class="s0">: </span><span class="s1">&quot;ipython&quot;</span><span class="s0">,</span>
+    <span class="s1">&quot;version&quot;</span><span class="s0">: </span><span class="s2">2</span>
+   <span class="s0">},</span>
+   <span class="s1">&quot;file_extension&quot;</span><span class="s0">: </span><span class="s1">&quot;.py&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;mimetype&quot;</span><span class="s0">: </span><span class="s1">&quot;text/x-python&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;name&quot;</span><span class="s0">: </span><span class="s1">&quot;python&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;nbconvert_exporter&quot;</span><span class="s0">: </span><span class="s1">&quot;python&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;pygments_lexer&quot;</span><span class="s0">: </span><span class="s1">&quot;ipython2&quot;</span><span class="s0">,</span>
+   <span class="s1">&quot;version&quot;</span><span class="s0">: </span><span class="s1">&quot;2.7.6&quot;</span>
+  <span class="s0">}</span>
+ <span class="s0">},</span>
+ <span class="s1">&quot;nbformat&quot;</span><span class="s0">: </span><span class="s2">4</span><span class="s0">,</span>
+ <span class="s1">&quot;nbformat_minor&quot;</span><span class="s0">: </span><span class="s2">5</span>
+<span class="s0">}</span>
+</pre>
+</body>
+</html>
