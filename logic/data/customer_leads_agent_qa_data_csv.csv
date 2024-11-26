@@ -1,0 +1,13 @@
+expected_response,id,phase,prompt_text,step
+"""They offer unique value in areas like [strengths].""",500%,Competitor Analysis,"""What unique value do they offer?""",Value Proposition
+"""Our target audience is [demographic].""",100%,Target Market,"""Who is your target audience?""",Audience
+"""Our ideal customer profile includes [attributes].""",300%,Target Market,"What's your ideal customer profile?""",Customer Profile
+"""We're focusing on regions like [location].""",200%,Target Market,"""What regions are you targeting?""",Location
+"""Our competitors include [names].""",400%,Competitor Analysis,"""Who are your primary competitors?""",Competitors
+"""Available resources include [budget, team, technology].""",700%,Resource Planning,"""What resources do you have available?""",Resources
+"""The estimated budget for this project is [amount].""",800%,Resource Planning,"""What's your estimated budget?""",Budget
+"""We plan to achieve our goals by [timeline].""",900%,Planning," ""What's  your expected timeline?""",Timeline
+"""We plan to differentiate by [strategy].""",600%,Competitor Analysis,"""How do you plan to differentiate from competitors?""",Differentiation
+"Please specify the industry you’re targeting, such as 'Tech' or 'Healthcare'.""",600%,Competitor Analysis,"""What is your target industry?""",Industry
+"Provide the geographical location of the companies, such as 'San Francisco' or 'New York'",600%,Target Market,"""Where are these companies located?""",Location
+"Tell me the job roles you want to target, such as 'CTO' or 'Product Manager'.",600%,Resource Planning,"""What roles are you targeting?""",Audience
